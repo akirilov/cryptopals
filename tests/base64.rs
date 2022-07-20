@@ -1,4 +1,4 @@
-use crate::base64;
+use cryptopals::base64;
 
 #[test]
 fn encode_test() {

@@ -1,4 +1,4 @@
-use crate::xor;
+use cryptopals::xor;
 
 #[test]
 fn xor_test() {
