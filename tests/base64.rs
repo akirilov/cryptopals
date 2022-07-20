@@ -23,6 +23,12 @@ fn encode_test() {
     let result = base64::encode(&input);
     assert_eq!(result, oracle);
 
+    // String
+    let input = "test";
+    let oracle = "dGVzdA==";
+    let result = base64::encode(&input);
+    assert_eq!(result, oracle);
+
     // Empty
     let input = "";
     let oracle = "";
