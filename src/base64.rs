@@ -60,6 +60,9 @@ pub fn encode<T: AsRef<[u8]>>(bytes: T) -> String {
     result
 }
 
+// TODO
+// pub fn decode
+
 fn alphabet_nth(n: u32) -> char {
     ALPHABET.chars().nth(n as usize).unwrap()
 }
