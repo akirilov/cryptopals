@@ -29,3 +29,18 @@ fn xor_test() {
     let output = xor::xor(input1, input2);
     assert_eq!(output, oracle);
 }
+
+#[test]
+fn xor_byte_test() {
+    // Null test
+    let input = "Hello, world!";
+    let oracle: Vec<u8> = input.bytes().collect();
+    let output = xor::xor_byte(0, input);
+    assert_eq!(output, oracle);
+
+    // Null test
+    let input = "Hello, world!";
+    let oracle = [126, 83, 90, 90, 89, 26, 22, 65, 89, 68, 90, 82, 23];
+    let output = xor::xor_byte(0x36, input);
+    assert_eq!(output, oracle);
+}
