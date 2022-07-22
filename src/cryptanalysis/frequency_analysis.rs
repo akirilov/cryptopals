@@ -34,13 +34,18 @@ fn bytes_to_counts<T: AsRef<[u8]>>(bytes: T) -> HashMap<char, u64> {
     bytes
         .as_ref()
         .iter()
-        .map(|b| *b as char)
+        .map(|&b| b as char)
         .map(|b| b.to_ascii_lowercase())
         .filter(|b| b.is_ascii_lowercase())
         .fold(HashMap::new(), |mut map, b| {
             *map.entry(b).or_insert(0) += 1;
             map
         })
+}
+
+fn count_to_frequency(counts: HashMap<char, u64>) -> HashMap<char, f64> {
+    let total = counts.values().fold(0, |sum, &c| sum + c);
+    counts.iter().map(|(&k,&v)| (k, (v as f64)/(total as f64))).collect()
 }
 
 #[test]
@@ -56,5 +61,22 @@ fn test_bytes_to_counts() {
         ('d', 1),
     ]);
     let output = bytes_to_counts(input);
+    assert_eq!(output, oracle);
+}
+
+#[test]
+fn test_count_to_frequency() {
+    let input = "Hello world!";
+    let oracle = HashMap::from([
+        ('h', 0.1),
+        ('e', 0.1),
+        ('l', 0.3),
+        ('o', 0.2),
+        ('w', 0.1),
+        ('r', 0.1),
+        ('d', 0.1),
+    ]);
+    let output = bytes_to_counts(input);
+    let output = count_to_frequency(output);
     assert_eq!(output, oracle);
 }

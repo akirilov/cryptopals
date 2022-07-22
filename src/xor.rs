@@ -9,7 +9,7 @@ pub fn xor<T: AsRef<[u8]>>(bytes1: T, bytes2: T) -> Result<Vec<u8>, &'static str
     let result = bytes1
         .iter()
         .zip(bytes2)
-        .map(|(b1, b2)| b1 ^ b2)
+        .map(|(&b1, &b2)| b1 ^ b2)
         .collect();
 
     Ok(result)
