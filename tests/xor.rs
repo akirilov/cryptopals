@@ -2,6 +2,7 @@ use cryptopals::xor;
 
 #[test]
 fn xor_test() {
+    // Challenge 1.2
     // Basic test
     let input1 = "1c0111001f010100061a024b53535009181c";
     let input2 = "686974207468652062756c6c277320657965";
