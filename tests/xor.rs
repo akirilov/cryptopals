@@ -32,16 +32,16 @@ fn xor_test() {
 }
 
 #[test]
-fn xor_byte_test() {
+fn single_byte_xor_test() {
     // Null test
     let input = "Hello, world!";
     let oracle: Vec<u8> = input.bytes().collect();
-    let output = xor::xor_byte(0, input);
+    let output = xor::single_byte_xor(0, input);
     assert_eq!(output, oracle);
 
     // Null test
     let input = "Hello, world!";
     let oracle = [126, 83, 90, 90, 89, 26, 22, 65, 89, 68, 90, 82, 23];
-    let output = xor::xor_byte(0x36, input);
+    let output = xor::single_byte_xor(0x36, input);
     assert_eq!(output, oracle);
 }

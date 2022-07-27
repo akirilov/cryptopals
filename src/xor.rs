@@ -15,7 +15,7 @@ pub fn xor<T: AsRef<[u8]>>(bytes1: T, bytes2: T) -> Result<Vec<u8>, &'static str
     Ok(result)
 }
 
-pub fn xor_byte<T: AsRef<[u8]>>(rot: u8, bytes: T) -> Vec<u8> {
+pub fn single_byte_xor<T: AsRef<[u8]>>(xor_byte: u8, bytes: T) -> Vec<u8> {
     let bytes = bytes.as_ref();
-    xor(bytes, &vec![rot; bytes.len()]).unwrap()
+    xor(bytes, &vec![xor_byte; bytes.len()]).unwrap()
 }

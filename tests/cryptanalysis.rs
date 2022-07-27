@@ -1,5 +1,4 @@
 use cryptopals::cryptanalysis::*;
-use cryptopals::xor;
 use std::fs;
 
 #[test]
@@ -14,16 +13,16 @@ fn frequency_score_test() {
 }
 
 #[test]
-fn find_xor_byte_test() {
+fn find_single_byte_xor_test() {
     // Challenge 1.3
     let input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
-    let rot_oracle = 88;
+    let xor_byte_oracle = 88;
     let score_oracle = 9.26;
     let text_oracle = "Cooking MC's like a pound of bacon";
     let input = hex::decode(input).expect("hex decode failed");
-    let rot_output = find_xor_byte(CryptanalysisMethod::FrequencyAnalysis, &input);
-    assert_eq!(rot_output, rot_oracle);
-    let text_output = xor::xor_byte(rot_output, &input);
+    let xor_output = find_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &input);
+    assert_eq!(xor_output.xor_byte, xor_byte_oracle);
+    let text_output = xor_output.bytes;
     let score_output = CryptanalysisMethod::FrequencyAnalysis.score(&text_output);
     let score_output = (100.0 * score_output).round()/100.0;
     let text_output:Vec<char> = text_output.iter().map(|&x| x as char).collect();
@@ -42,12 +41,11 @@ fn identify_xor_test() {
     let lines = contents.split("\n");
     let mut best_score = 99999999.0;
     let mut best_hex = "";
-    let mut best_plain: String = "".to_string();
+    let mut best_plain = "".to_string();
     for hex in lines {
         let hex = hex.trim();
         let line = hex::decode(&hex).expect("hex decode failed");
-        let rot = find_xor_byte(CryptanalysisMethod::FrequencyAnalysis, &line);
-        let plain = xor::xor_byte(rot, &line);
+        let plain = find_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &line).bytes;
         let plain: Vec<char> = plain.iter().map(|&x| x as char).collect();
         let plain: String = plain.iter().collect();
         let score = CryptanalysisMethod::FrequencyAnalysis.score(&plain);
