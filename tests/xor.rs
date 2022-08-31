@@ -39,9 +39,27 @@ fn single_byte_xor_test() {
     let output = xor::single_byte_xor(0, input);
     assert_eq!(output, oracle);
 
-    // Null test
+    // Basic test
     let input = "Hello, world!";
     let oracle = [126, 83, 90, 90, 89, 26, 22, 65, 89, 68, 90, 82, 23];
     let output = xor::single_byte_xor(0x36, input);
+    assert_eq!(output, oracle);
+}
+
+#[test]
+fn repeating_key_xor_test() {
+    // Simple test
+    let input = "Hello, world!";
+    let rot_key = [0x36, 0];
+    let oracle = [126, 101, 90, 108, 89, 44, 22, 119, 89, 114, 90, 100, 23];
+    let output = xor::repeating_key_xor(rot_key, input);
+    assert_eq!(output, oracle);
+
+    // Challenge 1.5
+    let input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
+    let rot_key = "ICE";
+    let oracle = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
+    let oracle = hex::decode(oracle).expect("hex decode failed");
+    let output = xor::repeating_key_xor(rot_key, input);
     assert_eq!(output, oracle);
 }
