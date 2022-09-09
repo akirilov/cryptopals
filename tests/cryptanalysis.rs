@@ -60,3 +60,12 @@ fn identify_xor_test() {
     assert_eq!(best_hex, hex_oracle);
     assert_eq!(best_plain, plain_oracle);
 }
+
+#[test]
+fn get_hamming_distance_test() {
+    let input1 = "this is a test";
+    let input2 = "wokka wokka!!!";
+    let oracle = 37;
+    let output = get_hamming_distance(input1, input2).expect("Mismatched lengths");
+    assert_eq!(output, oracle);
+}
