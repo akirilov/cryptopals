@@ -79,6 +79,8 @@ fn break_repeating_key_xor_test() {
     let mut oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
     oracle_plaintext.retain(|x| x != '\n');
 
-    let cipher_bytes = base64::decode(ciphertext);
-    assert_eq!("", oracle_plaintext);
+    let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
+    let result = break_repeating_key_xor(40, cipher_bytes).bytes;
+    let result = String::from_utf8(result).expect("string conversion failed");
+    assert_eq!(result, oracle_plaintext);
 }

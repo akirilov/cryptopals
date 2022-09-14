@@ -27,23 +27,6 @@ impl CryptanalysisMethod {
     }
 }
 
-pub fn get_hamming_distance<T: AsRef<[u8]>, U: AsRef<[u8]>>(bytes1: T, bytes2: U) -> Result<u32, &'static str> {
-    let bytes1 = bytes1.as_ref();
-    let bytes2 = bytes2.as_ref();
-
-    if bytes1.len() != bytes2.len() {
-        return Err("array lengths must match")
-    }
-
-    // Xor arrays to get positions of differing bits, then count bits in each byte and sum
-    let result = bytes1.iter()
-        .zip(bytes2)
-        .map(|(a,b)| a^b) // rust naive combines this with the fold
-        .fold(0, |s, x| s + x.count_ones());
-
-    Ok(result)
-}
-
 pub fn break_single_byte_xor<T: AsRef<[u8]>>(method: CryptanalysisMethod, bytes: T) -> SingleByteXorResult {
     let mut xor_byte = 0;
     let mut best_score = method.score(&bytes);
@@ -63,8 +46,36 @@ pub fn break_single_byte_xor<T: AsRef<[u8]>>(method: CryptanalysisMethod, bytes:
     }
 }
 
-pub fn break_repeating_key_xor<T: AsRef<[u8]>>(bytes: T) -> RepeatingKeyXorResult {
-    // TODO: implement
+pub fn get_hamming_distance<T: AsRef<[u8]>, U: AsRef<[u8]>>(bytes1: T, bytes2: U) -> Result<u32, &'static str> {
+    let bytes1 = bytes1.as_ref();
+    let bytes2 = bytes2.as_ref();
+
+    if bytes1.len() != bytes2.len() {
+        return Err("array lengths must match")
+    }
+
+    // Xor arrays to get positions of differing bits, then count bits in each byte and sum
+    let result = bytes1.iter()
+        .zip(bytes2)
+        .map(|(a,b)| a^b) // rust naive combines this with the fold
+        .fold(0, |s, x| s + x.count_ones());
+
+    Ok(result)
+}
+
+pub fn break_repeating_key_xor<T: AsRef<[u8]>>(max_keysize: u32, bytes: T) -> RepeatingKeyXorResult {
+    let bytes = bytes.as_ref();
+
+    // Step 1: Find the keysize
+    let mut best_score = 0;
+    let mut best_keysize = 0;
+
+    for i in 1..(max_keysize + 1) {
+        // TODO
+    }
+
+    // Step 2: Break into blocks and solve each block as single byte xor
+
     RepeatingKeyXorResult {
         key: Vec::<u8>::new(),
         bytes: Vec::<u8>::new(),

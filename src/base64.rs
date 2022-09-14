@@ -97,7 +97,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
         }
 
         // build as many bytes as we can
-        while (leftovers.n_bits >= 8)
+        while leftovers.n_bits >= 8
         {
             // Temporary shift right to read only the top 6 bits
             let shift = leftovers.n_bits - 8;
