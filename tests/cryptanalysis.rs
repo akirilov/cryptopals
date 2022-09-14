@@ -1,4 +1,5 @@
 use cryptopals::cryptanalysis::*;
+use cryptopals::base64;
 use std::fs;
 
 #[test]
@@ -13,14 +14,14 @@ fn frequency_score_test() {
 }
 
 #[test]
-fn find_single_byte_xor_test() {
+fn break_single_byte_xor_test() {
     // Challenge 1.3
     let input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
     let xor_byte_oracle = 88;
     let score_oracle = 9.26;
     let text_oracle = "Cooking MC's like a pound of bacon";
     let input = hex::decode(input).expect("hex decode failed");
-    let xor_output = find_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &input);
+    let xor_output = break_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &input);
     assert_eq!(xor_output.xor_byte, xor_byte_oracle);
     let text_output = xor_output.bytes;
     let score_output = CryptanalysisMethod::FrequencyAnalysis.score(&text_output);
@@ -45,7 +46,7 @@ fn identify_xor_test() {
     for hex in lines {
         let hex = hex.trim();
         let line = hex::decode(&hex).expect("hex decode failed");
-        let plain = find_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &line).bytes;
+        let plain = break_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, &line).bytes;
         let plain: Vec<char> = plain.iter().map(|&x| x as char).collect();
         let plain: String = plain.iter().collect();
         let score = CryptanalysisMethod::FrequencyAnalysis.score(&plain);
@@ -68,4 +69,16 @@ fn get_hamming_distance_test() {
     let oracle = 37;
     let output = get_hamming_distance(input1, input2).expect("Mismatched lengths");
     assert_eq!(output, oracle);
+}
+
+#[test]
+fn break_repeating_key_xor_test() {
+    // Challenge 1.6
+    let mut ciphertext = fs::read_to_string("tests/res/6.txt").expect("Something went wrong reading the file");
+    ciphertext.retain(|x| x != '\n');
+    let mut oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
+    oracle_plaintext.retain(|x| x != '\n');
+
+    let cipher_bytes = base64::decode(ciphertext);
+    assert_eq!("", oracle_plaintext);
 }

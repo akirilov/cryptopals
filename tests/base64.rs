@@ -37,3 +37,48 @@ fn encode_test() {
     let result = base64::encode(&input);
     assert_eq!(result, oracle);
 }
+
+#[test]
+fn decode_test() {
+    // No Pad
+    let input = "bm9wYWQh";
+    let oracle = "nopad!".as_bytes().to_vec();
+    let result = base64::decode(&input).expect("base64 decode failed");
+    assert_eq!(result, oracle);
+    // One pad
+    let input = "dW4=";
+    let oracle = "un".as_bytes().to_vec();
+    let result = base64::decode(&input).expect("base64 decode failed");
+    assert_eq!(result, oracle);
+    // Two pad
+    let input = "dGVzdA==";
+    let oracle = "test".as_bytes().to_vec();
+    let result = base64::decode(&input).expect("base64 decode failed");
+    assert_eq!(result, oracle);
+    // Empty
+    let input = "";
+    let oracle = "".as_bytes().to_vec();
+    let result = base64::decode(&input).expect("base64 decode failed");
+    assert_eq!(result, oracle);
+    // Length Error
+    let input = "dGVzdA=";
+    let oracle = Err("Invalid length");
+    let result = base64::decode(&input);
+    assert_eq!(result, oracle);
+    // Nonzero padding
+    let input = "dGVzdB==";
+    let oracle = Err("Nonzero padding");
+    let result = base64::decode(&input);
+    assert_eq!(result, oracle);
+    // Unexpected character
+    let input = "dGVzd)==";
+    let oracle = Err("Invalid character");
+    let result = base64::decode(&input);
+    assert_eq!(result, oracle);
+    // Pad in middle of string
+    // Nonzero padding
+    let input = "dGV=zdB=";
+    let oracle = Err("Characters after padding");
+    let result = base64::decode(&input);
+    assert_eq!(result, oracle);
+}
