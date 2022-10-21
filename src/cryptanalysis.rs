@@ -29,9 +29,9 @@ impl CryptanalysisMethod {
 
 pub fn break_single_byte_xor<T: AsRef<[u8]>>(method: CryptanalysisMethod, bytes: T) -> SingleByteXorResult {
     let mut xor_byte = 0;
-    let mut best_score = method.score(&bytes);
-    let mut best_result = xor::single_byte_xor(0, &bytes);
-    for i in 1..u8::max_value() {
+    let mut best_score = f64::INFINITY;
+    let mut best_result = Vec::new();
+    for i in 0..u8::max_value() {
         let result = xor::single_byte_xor(i, &bytes);
         let score = method.score(&result);
         if score < best_score {
@@ -67,14 +67,17 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(max_keysize: u32, bytes: T) -> Re
     let bytes = bytes.as_ref();
 
     // Step 1: Find the keysize
-    let mut best_score = 0;
+    let mut best_score = u32::max_value();
     let mut best_keysize = 0;
 
+    // For now we'll just do a rolling comparison of 4 blocks and average, but in the future we can
+    // improve this
     for i in 1..(max_keysize + 1) {
         // TODO
     }
 
     // Step 2: Break into blocks and solve each block as single byte xor
+    // TODO
 
     RepeatingKeyXorResult {
         key: Vec::<u8>::new(),
