@@ -70,13 +70,19 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(max_keysize: u32, bytes: T) -> Re
     let mut best_score = u32::max_value();
     let mut best_keysize = 0;
 
-    // For now we'll just do a rolling comparison of 4 blocks and average, but in the future we can
+    // For now we'll just do a rolling comparison of N=4? blocks and average, but in the future we can
     // improve this
     for i in 1..(max_keysize + 1) {
+
         // TODO
+        // Take hamming distances between N blocks and average
+        // The lowest candidate is probably the keysize
     }
 
-    // Step 2: Break into blocks and solve each block as single byte xor
+    // Step 2: Break into blocks (every nth character) and solve each block as single byte xor
+    // TODO
+
+    // Step 3: Recover the key and decipher the entire message
     // TODO
 
     RepeatingKeyXorResult {
