@@ -31,7 +31,7 @@ static FREQUENCY_TABLE: phf::Map<char, f64> = phf_map! {
     'z' => 0.001,
 };
 
-pub (super) fn score<T: AsRef<[u8]>>(bytes: T) -> f64 {
+pub(super) fn score<T: AsRef<[u8]>>(bytes: T) -> f64 {
     chi_square_test(&count_to_frequency(&bytes_to_counts(bytes)))
 }
 
@@ -49,7 +49,10 @@ fn bytes_to_counts<T: AsRef<[u8]>>(bytes: T) -> HashMap<char, u64> {
 
 fn count_to_frequency(counts: &HashMap<char, u64>) -> HashMap<char, f64> {
     let total = counts.values().fold(0, |sum, &c| sum + c);
-    counts.iter().map(|(&k,&v)| (k, (v as f64)/(total as f64))).collect()
+    counts
+        .iter()
+        .map(|(&k, &v)| (k, (v as f64) / (total as f64)))
+        .collect()
 }
 
 fn chi_square_test(frequencies: &HashMap<char, f64>) -> f64 {
@@ -103,7 +106,7 @@ fn test_chi_square_test() {
     let output = bytes_to_counts(input);
     let output = count_to_frequency(&output);
     let output = chi_square_test(&output);
-    let output = (100.0*output).round()/100.0;
+    let output = (100.0 * output).round() / 100.0;
     assert_eq!(output, oracle);
 
     // ROT 13
@@ -112,9 +115,8 @@ fn test_chi_square_test() {
     let output = bytes_to_counts(input);
     let output = count_to_frequency(&output);
     let output = chi_square_test(&output);
-    let output = (100.0*output).round()/100.0;
+    let output = (100.0 * output).round() / 100.0;
     assert_eq!(output, oracle);
-
 }
 
 #[test]
@@ -122,20 +124,20 @@ fn test_score() {
     let input = "Hello world! This is a longer string so we can see the chi square test in action.";
     let oracle = 3.2;
     let output = score(input);
-    let output = (100.0*output).round()/100.0;
+    let output = (100.0 * output).round() / 100.0;
     assert_eq!(output, oracle);
 
     // ROT 13
     let input = "Uryyb jbeyq! Guvf vf n ybatre fgevat fb jr pna frr gur puv fdhner grfg va npgvba.";
     let oracle = 4.54;
     let output = score(input);
-    let output = (100.0*output).round()/100.0;
+    let output = (100.0 * output).round() / 100.0;
     assert_eq!(output, oracle);
 
     // Empty
     let input = "";
     let oracle = 0.0;
     let output = score(input);
-    let output = (100.0*output).round()/100.0;
+    let output = (100.0 * output).round() / 100.0;
     assert_eq!(output, oracle);
 }

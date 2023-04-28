@@ -10,10 +10,7 @@ struct Leftovers {
 pub fn encode<T: AsRef<[u8]>>(bytes: T) -> String {
     let bytes = bytes.as_ref();
     let mut result = String::new();
-    let mut leftovers = Leftovers {
-        n_bits: 0,
-        data: 0,
-    };
+    let mut leftovers = Leftovers { n_bits: 0, data: 0 };
 
     // Generate the result as we go
     for &b in bytes {
@@ -48,13 +45,13 @@ pub fn encode<T: AsRef<[u8]>>(bytes: T) -> String {
             result.push(b64_char);
             result.push(PADDING);
             result.push(PADDING);
-        },
+        }
         4 => {
             let b64_char = alphabet_nth(leftovers.data << 2);
             result.push(b64_char);
             result.push(PADDING);
-        },
-        _ => {},
+        }
+        _ => {}
     }
 
     result
@@ -64,14 +61,11 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
     let encoded = encoded.as_ref();
     let mut result: Vec<u8> = Vec::new();
     let mut pad_size = 0;
-    let mut leftovers = Leftovers {
-        n_bits: 0,
-        data: 0,
-    };
+    let mut leftovers = Leftovers { n_bits: 0, data: 0 };
 
     // Check length
     if encoded.len() % 4 != 0 {
-        return Err("Invalid length")
+        return Err("Invalid length");
     }
 
     // Loop over the encoded bytes, popping off 6 bits at a time and adding a new byte to the result
@@ -82,7 +76,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
         // append the current byte
         if b != PADDING {
             if pad_size != 0 {
-                return Err("Characters after padding")
+                return Err("Characters after padding");
             }
             leftovers.n_bits += 6;
             leftovers.data <<= 6;
@@ -91,14 +85,12 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
                 Some(x) => leftovers.data |= x as u32,
                 None => return Err("Invalid character"),
             }
-        }
-        else {
+        } else {
             pad_size += 1;
         }
 
         // build as many bytes as we can
-        while leftovers.n_bits >= 8
-        {
+        while leftovers.n_bits >= 8 {
             // Temporary shift right to read only the top 6 bits
             let shift = leftovers.n_bits - 8;
             let out_char = leftovers.data >> shift;
@@ -115,7 +107,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
 
     // Check padding
     if leftovers.data != 0 {
-        return Err("Nonzero padding")
+        return Err("Nonzero padding");
     }
 
     Ok(result)

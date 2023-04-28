@@ -3,7 +3,7 @@ pub fn xor<T: AsRef<[u8]>, U: AsRef<[u8]>>(bytes1: T, bytes2: U) -> Result<Vec<u
     let bytes2 = bytes2.as_ref();
 
     if bytes1.len() != bytes2.len() {
-        return Err("array lengths must match")
+        return Err("array lengths must match");
     }
 
     let result = bytes1
