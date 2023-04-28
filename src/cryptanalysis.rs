@@ -86,6 +86,7 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
     // improve this
     for i in 1..(max_keysize + 1) {
         // TODO
+        // Transpose
         // Take hamming distances between N blocks and average
         // The lowest candidate is probably the keysize
     }
