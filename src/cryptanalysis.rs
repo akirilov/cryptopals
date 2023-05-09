@@ -51,12 +51,18 @@ pub fn break_single_byte_xor<T: AsRef<[u8]>>(
 pub fn get_hamming_distance<T: AsRef<[u8]>, U: AsRef<[u8]>>(
     bytes1: T,
     bytes2: U,
+    truncate: bool,
 ) -> Result<u32, &'static str> {
-    let bytes1 = bytes1.as_ref();
-    let bytes2 = bytes2.as_ref();
+    let mut bytes1 = bytes1.as_ref();
+    let mut bytes2 = bytes2.as_ref();
 
-    if bytes1.len() != bytes2.len() {
+    if !truncate && bytes1.len() != bytes2.len() {
         return Err("array lengths must match");
+    }
+    else {
+        let min_len = cmp::min(bytes1.len(), bytes2.len());
+        bytes1 = &bytes1[..min_len];
+        bytes2 = &bytes2[..min_len];
     }
 
     // Xor arrays to get positions of differing bits, then count bits in each byte and sum
@@ -89,7 +95,7 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
         // Transpose
         // Take hamming distances between N blocks and average
         // The lowest candidate is probably the keysize
-    }
+        }
 
     // Step 2: Break into blocks (every nth character) and solve each block as single byte xor
     // TODO

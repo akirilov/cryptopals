@@ -57,7 +57,7 @@ pub fn encode<T: AsRef<[u8]>>(bytes: T) -> String {
     result
 }
 
-pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
+pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, String> {
     let encoded = encoded.as_ref();
     let mut result: Vec<u8> = Vec::new();
     let mut pad_size = 0;
@@ -65,7 +65,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
 
     // Check length
     if encoded.len() % 4 != 0 {
-        return Err("Invalid length");
+        return Err(format!("Invalid length"));
     }
 
     // Loop over the encoded bytes, popping off 6 bits at a time and adding a new byte to the result
@@ -76,14 +76,14 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
         // append the current byte
         if b != PADDING {
             if pad_size != 0 {
-                return Err("Characters after padding");
+                return Err(format!("Characters after padding"));
             }
             leftovers.n_bits += 6;
             leftovers.data <<= 6;
             let pos = ALPHABET.chars().position(|c| c == b);
             match pos {
                 Some(x) => leftovers.data |= x as u32,
-                None => return Err("Invalid character"),
+                None => return Err(format!("Invalid character: [{b}]")),
             }
         } else {
             pad_size += 1;
@@ -107,7 +107,7 @@ pub fn decode<T: AsRef<[u8]>>(encoded: T) -> Result<Vec<u8>, &'static str> {
 
     // Check padding
     if leftovers.data != 0 {
-        return Err("Nonzero padding");
+        return Err(format!("Nonzero padding"));
     }
 
     Ok(result)

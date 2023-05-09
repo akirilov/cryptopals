@@ -24,7 +24,7 @@ fn xor_test() {
     // Length mismatch
     let input1 = "1c0111001f010100061a024b53535009181c";
     let input2 = "686974207468652062756c6c2773206579";
-    let oracle = Err("array lengths must match");
+    let oracle = Err(format!("array lengths must match"));
     let input1 = hex::decode(input1).expect("hex decode failed");
     let input2 = hex::decode(input2).expect("hex decode failed");
     let output = xor::xor(input1, input2);

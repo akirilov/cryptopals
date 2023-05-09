@@ -67,7 +67,7 @@ fn get_hamming_distance_test() {
     let input1 = "this is a test";
     let input2 = "wokka wokka!!!";
     let oracle = 37;
-    let output = get_hamming_distance(input1, input2).expect("Mismatched lengths");
+    let output = get_hamming_distance(input1, input2, false).expect("Mismatched lengths");
     assert_eq!(output, oracle);
 }
 
@@ -75,9 +75,9 @@ fn get_hamming_distance_test() {
 fn break_repeating_key_xor_test() {
     // Challenge 1.6
     let mut ciphertext = fs::read_to_string("tests/res/6.txt").expect("Something went wrong reading the file");
-    ciphertext.retain(|x| x != '\n');
+    ciphertext.retain(|x| x != '\n' && x != '\r');
     let mut oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
-    oracle_plaintext.retain(|x| x != '\n');
+    oracle_plaintext.retain(|x| x != '\n' && x != '\r');
 
     let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
     let result = break_repeating_key_xor(40, cipher_bytes).bytes;

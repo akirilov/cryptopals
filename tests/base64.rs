@@ -62,23 +62,23 @@ fn decode_test() {
     assert_eq!(result, oracle);
     // Length Error
     let input = "dGVzdA=";
-    let oracle = Err("Invalid length");
+    let oracle = Err(format!("Invalid length"));
     let result = base64::decode(&input);
     assert_eq!(result, oracle);
     // Nonzero padding
     let input = "dGVzdB==";
-    let oracle = Err("Nonzero padding");
+    let oracle = Err(format!("Nonzero padding"));
     let result = base64::decode(&input);
     assert_eq!(result, oracle);
     // Unexpected character
     let input = "dGVzd)==";
-    let oracle = Err("Invalid character");
+    let oracle = Err(format!("Invalid character: [)]"));
     let result = base64::decode(&input);
     assert_eq!(result, oracle);
     // Pad in middle of string
     // Nonzero padding
     let input = "dGV=zdB=";
-    let oracle = Err("Characters after padding");
+    let oracle = Err(format!("Characters after padding"));
     let result = base64::decode(&input);
     assert_eq!(result, oracle);
 }
