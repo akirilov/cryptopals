@@ -80,7 +80,7 @@ fn break_repeating_key_xor_test() {
     oracle_plaintext.retain(|x| x != '\n' && x != '\r');
 
     let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
-    let result = break_repeating_key_xor(40, cipher_bytes).bytes;
+    let result = break_repeating_key_xor(100, cipher_bytes).bytes;
     let result = String::from_utf8(result).expect("string conversion failed");
     assert_eq!(result, oracle_plaintext);
 }

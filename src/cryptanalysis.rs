@@ -79,19 +79,43 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
     let max_keysize = cmp::min(max_keysize, bytes.len());
 
     // Step 1: Find the keysize
-    let mut best_score = u32::max_value();
+    let mut best_score = f64::INFINITY;
     let mut best_keysize = 0;
 
-    // For now we'll just do a rolling comparison of N=4? blocks and average, but in the future we can
+    // For now we'll just do a rolling comparison of all blocks and average, but in the future we can
     // improve this
     for i in 1..(max_keysize + 1) {
-        // TODO
-        // Transpose
-        // Take hamming distances between N blocks and average
-        // The lowest candidate is probably the keysize
+        let keysize = i;
+        let mut score = 0.0;
+        let mut count = 0;
+
+        // Take the hamming distance between all neighboring blocks
+        // Divide the hamming distance by the keysize to normalize
+        for j in 0..(bytes.len() / keysize - 1) {
+            let block1 = &bytes[(j * keysize)..((j + 1) * keysize)];
+            let block2 = &bytes[((j + 1) * keysize)..((j + 2) * keysize)];
+            let distance = get_hamming_distance(block1, block2).unwrap() as f64;
+            score += distance / keysize as f64;
+            count += 1;
         }
 
-    // Step 2: Break into blocks (every nth character) and solve each block as single byte xor
+        // Average the score
+        score /= count as f64;
+        
+        // The lowest candidate is probably the keysize
+        if score < best_score {
+            best_score = score;
+            best_keysize = keysize;
+        }
+
+        // DEBUG
+        println!("keysize: {}, score: {}", keysize, score);
+    }
+
+    // DEBUG
+    println!("best keysize: {}", best_keysize);
+
+    // Step 2: Transpose into blocks (every nth character) and solve each block as single byte xor
     // TODO
 
     // Step 3: Recover the key and decipher the entire message
