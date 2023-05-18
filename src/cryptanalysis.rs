@@ -115,8 +115,11 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
     // DEBUG
     println!("best keysize: {}", best_keysize);
 
-    // Step 2: Transpose into blocks (every nth character) and solve each block as single byte xor
-    // TODO
+    // Transpose into blocks (every nth character)
+    let transposed_blocks = transpose_blocks(bytes, best_keysize).unwrap();
+    let mut key = Vec::<u8>::new();
+    
+    // Solve each block as single byte xor
 
     // Step 3: Recover the key and decipher the entire message
     // TODO
@@ -125,4 +128,19 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
         key: Vec::<u8>::new(),
         bytes: Vec::<u8>::new(),
     }
+}
+
+fn transpose_blocks<T: AsRef<[u8]>>(bytes: T, keysize: usize) -> Result<Vec<Vec<u8>>, String> {
+    if keysize == 0 {
+        return Err(format!("keysize must be greater than 0"));
+    }
+
+    let bytes = bytes.as_ref();
+    let mut transposed_blocks = vec![Vec::new(); keysize];
+
+    for (i, byte) in bytes.iter().enumerate() {
+        transposed_blocks[i % keysize].push(*byte);
+    }
+
+    Ok(transposed_blocks)
 }
