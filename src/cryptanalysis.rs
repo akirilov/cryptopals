@@ -101,32 +101,30 @@ pub fn break_repeating_key_xor<T: AsRef<[u8]>>(
 
         // Average the score
         score /= count as f64;
-        
+
         // The lowest candidate is probably the keysize
         if score < best_score {
             best_score = score;
             best_keysize = keysize;
         }
-
-        // DEBUG
-        println!("keysize: {}, score: {}", keysize, score);
     }
-
-    // DEBUG
-    println!("best keysize: {}", best_keysize);
 
     // Transpose into blocks (every nth character)
     let transposed_blocks = transpose_blocks(bytes, best_keysize).unwrap();
     let mut key = Vec::<u8>::new();
-    
-    // Solve each block as single byte xor
 
-    // Step 3: Recover the key and decipher the entire message
-    // TODO
+    // Solve each block as single byte xor
+    for block in transposed_blocks {
+        let block_key = break_single_byte_xor(CryptanalysisMethod::FrequencyAnalysis, block).xor_byte;
+        key.push(block_key);
+    }
+
+    // Recover the key and decipher the entire message
+    let plaintext = xor::repeating_key_xor(&key, &bytes);
 
     RepeatingKeyXorResult {
-        key: Vec::<u8>::new(),
-        bytes: Vec::<u8>::new(),
+        key: key,
+        bytes: plaintext,
     }
 }
 

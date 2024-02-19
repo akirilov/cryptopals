@@ -76,8 +76,7 @@ fn break_repeating_key_xor_test() {
     // Challenge 1.6
     let mut ciphertext = fs::read_to_string("tests/res/6.txt").expect("Something went wrong reading the file");
     ciphertext.retain(|x| x != '\n' && x != '\r');
-    let mut oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
-    oracle_plaintext.retain(|x| x != '\n' && x != '\r');
+    let oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
 
     let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
     let result = break_repeating_key_xor(100, cipher_bytes).bytes;
