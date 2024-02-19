@@ -15,7 +15,7 @@ fn frequency_score_test() {
 
 #[test]
 fn break_single_byte_xor_test() {
-    // Challenge 1.3
+    // Challenge 3
     let input = "1b37373331363f78151b7f2b783431333d78397828372d363c78373e783a393b3736";
     let xor_byte_oracle = 88;
     let score_oracle = 9.26;
@@ -34,11 +34,11 @@ fn break_single_byte_xor_test() {
 
 #[test]
 fn identify_xor_test() {
-    // Challenge 1.4
+    // Challenge 4
     let score_oracle = 11.83;
     let hex_oracle = "7b5a4215415d544115415d5015455447414c155c46155f4058455c5b523f";
     let plain_oracle = "Now that the party is jumping\n";
-    let contents = fs::read_to_string("tests/res/1.4.txt").expect("Something went wrong reading the file");
+    let contents = fs::read_to_string("tests/res/4.txt").expect("Something went wrong reading the file");
     let lines = contents.split("\n");
     let mut best_score = 99999999.0;
     let mut best_hex = "";
@@ -73,10 +73,10 @@ fn get_hamming_distance_test() {
 
 #[test]
 fn break_repeating_key_xor_test() {
-    // Challenge 1.6
-    let mut ciphertext = fs::read_to_string("tests/res/1.6.txt").expect("Something went wrong reading the file");
+    // Challenge 6
+    let mut ciphertext = fs::read_to_string("tests/res/6.txt").expect("Something went wrong reading the file");
     ciphertext.retain(|x| x != '\n' && x != '\r');
-    let oracle_plaintext = fs::read_to_string("tests/res/1.6_oracle.txt").expect("Something went wrong reading the file");
+    let oracle_plaintext = fs::read_to_string("tests/res/6_oracle.txt").expect("Something went wrong reading the file");
 
     let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
     let result = break_repeating_key_xor(100, cipher_bytes).bytes;

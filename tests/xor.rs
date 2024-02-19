@@ -2,7 +2,7 @@ use cryptopals::xor;
 
 #[test]
 fn xor_test() {
-    // Challenge 1.2
+    // Challenge 2
     // Basic test
     let input1 = "1c0111001f010100061a024b53535009181c";
     let input2 = "686974207468652062756c6c277320657965";
@@ -55,7 +55,7 @@ fn repeating_key_xor_test() {
     let output = xor::repeating_key_xor(rot_key, input);
     assert_eq!(output, oracle);
 
-    // Challenge 1.5
+    // Challenge 5
     let input = "Burning 'em, if you ain't quick and nimble\nI go crazy when I hear a cymbal";
     let rot_key = "ICE";
     let oracle = "0b3637272a2b2e63622c2e69692a23693a2a3c6324202d623d63343c2a26226324272765272a282b2f20430a652e2c652a3124333a653e2b2027630c692b20283165286326302e27282f";
