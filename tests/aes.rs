@@ -20,13 +20,13 @@ fn ecb_decode_test() {
 
 #[test]
 fn detect_aes_test() {
-    // Challenge 8
+    // Challenggit ae 8
     let ciphertext_raw = fs::read_to_string("tests/res/8.txt").expect("Something went wrong reading the file");
     let ciphertext_array: Vec<&str> = ciphertext_raw.split("\n").collect();
     let mut aes_line = None;
     for (i, ciphertext) in ciphertext_array.iter().enumerate() {
         let bytes = hex::decode(ciphertext).expect("Hex decode failed");
-        let result = aes::detect_aes(&bytes);
+        let result = aes::detect_ecb(&bytes);
         if result {
             aes_line = Some(i);
         }

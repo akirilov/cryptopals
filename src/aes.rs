@@ -10,12 +10,14 @@ pub fn detect_aes<T: AsRef<[u8]>>(bytes: T) -> bool {
 }
 */
 
-pub fn detect_aes<T: AsRef<[u8]>>(bytes: T) -> bool {
+pub fn detect_ecb<T: AsRef<[u8]>>(bytes: T) -> bool {
+    let blocksize = 16;
     let bytes = bytes.as_ref();
-    if bytes.len() % 16 != 0 {
+    if bytes.len() % blocksize != 0 {
         return false;
     }
-    let chunks = bytes.chunks(16);
+    let chunks = bytes.chunks(blocksize);
     let chunks_set = chunks.clone().collect::<HashSet<_>>();
+    // Repeated block suggests AES ECB
     return chunks.len() != chunks_set.len();
 }
