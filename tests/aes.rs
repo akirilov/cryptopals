@@ -1,7 +1,6 @@
-use cryptopals::base64;
+use cryptopals::{aes, base64, pkcs7};
 use openssl;
 use std::fs;
-use cryptopals::aes;
 
 #[test]
 fn ecb_decode_test() {
@@ -20,7 +19,7 @@ fn ecb_decode_test() {
 
 #[test]
 fn detect_aes_test() {
-    // Challenggit ae 8
+    // Challenge 8
     let ciphertext_raw = fs::read_to_string("tests/res/8.txt").expect("Something went wrong reading the file");
     let ciphertext_array: Vec<&str> = ciphertext_raw.split("\n").collect();
     let mut aes_line = None;
@@ -32,4 +31,20 @@ fn detect_aes_test() {
         }
     }
     assert_eq!(aes_line.unwrap(), 132);
+}
+
+#[test]
+fn decrypt_aes128_cbc_test() {
+    // Challenge 10
+    let mut ciphertext = fs::read_to_string("tests/res/10.txt").expect("Something went wrong reading the file");
+    ciphertext.retain(|x| x != '\n' && x != '\r');
+    let oracle = fs::read_to_string("tests/res/10_oracle.txt").expect("Something went wrong reading the file");
+    let oracle = String::from_utf8(pkcs7::pad(oracle.as_bytes(), 16)).expect("string conversion failed");
+
+    let cipher_bytes = base64::decode(ciphertext).expect("Base64 decode failed");
+    let key = b"YELLOW SUBMARINE";
+    let iv = [0; 16];
+    let result = aes::decrypt_aes128_cbc(&cipher_bytes, key, &iv).unwrap();
+    let result = String::from_utf8(result).expect("string conversion failed");
+    assert_eq!(result, oracle);
 }
